@@ -49,7 +49,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_resample_OBJECTS = resample.$(OBJEXT) resamplesubs.$(OBJEXT) \
 	sndlibextra.$(OBJEXT) filterkit.$(OBJEXT) audio.$(OBJEXT) \
-	io.$(OBJEXT) headers.$(OBJEXT) sound.$(OBJEXT)
+	io.$(OBJEXT) headers.$(OBJEXT) sound.$(OBJEXT) gpu_resample.$(OBJEXT)
 resample_OBJECTS = $(am_resample_OBJECTS)
 resample_DEPENDENCIES =
 am_windowfilter_OBJECTS = windowfilter.$(OBJEXT) \
@@ -63,7 +63,8 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
+NVCOMPILE = $(NVCC) $(NVFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES)
+CCLD = $(NVCC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(resample_SOURCES) $(windowfilter_SOURCES)
 DIST_SOURCES = $(resample_SOURCES) $(windowfilter_SOURCES)
@@ -80,8 +81,10 @@ AUTOHEADER = ${SHELL} /home/gxy/cuda-workspace/resample-GPU/GPU-Upsampling/missi
 AUTOMAKE = ${SHELL} /home/gxy/cuda-workspace/resample-GPU/GPU-Upsampling/missing --run automake-1.9
 AWK = gawk
 CC = gcc
+NVCC = nvcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
+NVFLAGS = -g -G
 CPP = gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo
@@ -149,6 +152,7 @@ INCLUDES = -I$(SNDLIB)
 resample_SOURCES = resample.c resamplesubs.c sndlibextra.c filterkit.c \
 	$(SNDLIB)/audio.c $(SNDLIB)/io.c $(SNDLIB)/headers.c $(SNDLIB)/sound.c \
 	resample.h stdefs.h sndlibextra.h filterkit.h smallfilter.h largefilter.h \
+	gpu_resample.h \
 	$(SNDLIB)/sndlib.h $(SNDLIB)/mus-config.h $(SNDLIB)/_sndlib.h $(SNDLIB)/sndlib-strings.h  $(SNDLIB)/configure
 
 resample_LDADD = -lm
@@ -160,7 +164,7 @@ EXTRA_DIST = $(man_MANS)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .o .obj
+.SUFFIXES: .c .o .obj .cu
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -235,6 +239,9 @@ include ./$(DEPDIR)/resamplesubs.Po
 include ./$(DEPDIR)/sndlibextra.Po
 include ./$(DEPDIR)/sound.Po
 include ./$(DEPDIR)/windowfilter.Po
+
+.cu.o:
+	$(NVCOMPILE) -c $<
 
 .c.o:
 	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
