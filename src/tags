@@ -1,0 +1,238 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ABS	stdefs.h	32;"	d
+ACLOCAL	Makefile	/^ACLOCAL = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run aclocal-1.9$/;"	m
+ACLOCAL_M4	Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ALLOCA	Makefile	/^ALLOCA = $/;"	m
+AMDEP_FALSE	Makefile	/^AMDEP_FALSE = #$/;"	m
+AMDEP_TRUE	Makefile	/^AMDEP_TRUE = $/;"	m
+AMTAR	Makefile	/^AMTAR = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run tar$/;"	m
+AUTOCONF	Makefile	/^AUTOCONF = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run autoconf$/;"	m
+AUTOHEADER	Makefile	/^AUTOHEADER = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run autoheader$/;"	m
+AUTOMAKE	Makefile	/^AUTOMAKE = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run automake-1.9$/;"	m
+AWK	Makefile	/^AWK = gawk$/;"	m
+Amask	resample.h	17;"	d
+BOOL	stdefs.h	/^typedef char           BOOL;$/;"	t
+BetaHelp	windowfilter.c	/^char BetaHelp[] =$/;"	v
+CC	Makefile	/^CC = gcc$/;"	m
+CCDEPMODE	Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCLD	Makefile	/^CCLD = $(NVCC)$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -O2$/;"	m
+COMPILE	Makefile	/^COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \\$/;"	m
+CONFIG_CLEAN_FILES	Makefile	/^CONFIG_CLEAN_FILES =$/;"	m
+CONFIG_HEADER	Makefile	/^CONFIG_HEADER = $(top_builddir)\/config.h$/;"	m
+CPP	Makefile	/^CPP = gcc -E$/;"	m
+CPPFLAGS	Makefile	/^CPPFLAGS = $/;"	m
+CTAGS	Makefile	/^CTAGS = ctags$/;"	m
+CYGPATH_W	Makefile	/^CYGPATH_W = echo$/;"	m
+D2R	stdefs.h	21;"	d
+DEFAULT_INCLUDES	Makefile	/^DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)$/;"	m
+DEFS	Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEPDIR	Makefile	/^DEPDIR = .deps$/;"	m
+DISTFILES	Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DIST_COMMON	Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.am $(srcdir)\/Makefile.in$/;"	m
+DIST_SOURCES	Makefile	/^DIST_SOURCES = $(resample_SOURCES) $(windowfilter_SOURCES)$/;"	m
+ECHO_C	Makefile	/^ECHO_C = $/;"	m
+ECHO_N	Makefile	/^ECHO_N = -n$/;"	m
+ECHO_T	Makefile	/^ECHO_T = $/;"	m
+EGREP	Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+ETAGS	Makefile	/^ETAGS = etags$/;"	m
+EXEEXT	Makefile	/^EXEEXT = $/;"	m
+EXTRA_DIST	Makefile	/^EXTRA_DIST = $(man_MANS)$/;"	m
+FALSE	stdefs.h	10;"	d
+FilterUD	filterkit.c	/^WORD FilterUD( HWORD Imp[], HWORD ImpD[],$/;"	f
+FilterUp	filterkit.c	/^WORD FilterUp(HWORD Imp[], HWORD ImpD[], $/;"	f
+FrollHelp	windowfilter.c	/^char FrollHelp[] =$/;"	v
+GetDouble	filterkit.c	/^double GetDouble(char *title, double deflt, char *help)$/;"	f
+GetString	filterkit.c	/^char *GetString(char *prompt, char *deflt, char *help)$/;"	f
+GetUHWORD	filterkit.h	158;"	d
+GetUShort	filterkit.c	/^unsigned short GetUShort(char *title, unsigned short deflt, char *help)$/;"	f
+HWORD	stdefs.h	/^typedef short          HWORD;$/;"	t
+HWORD_TO_MUS_SAMPLE_TYPE	stdefs.h	46;"	d
+IBUFFSIZE	resamplesubs.c	10;"	d	file:
+INCLUDES	Makefile	/^INCLUDES = -I$(SNDLIB)$/;"	m
+INLINE	stdefs.h	52;"	d
+INLINE	stdefs.h	54;"	d
+INSTALL	Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL_DATA	Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_HEADER	Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_STRIP_PROGRAM	Makefile	/^INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s$/;"	m
+INVALID_DATA_FORMAT	sndlibextra.h	42;"	d
+IS_FLOAT_FORMAT	sndlibextra.h	27;"	d
+Imp	filterkit.c	/^static HWORD *Imp;$/;"	v	file:
+ImpD	filterkit.c	/^static HWORD *ImpD;$/;"	v	file:
+ImpR	filterkit.c	/^static double ImpR[MAXNWING];$/;"	v	file:
+Izero	filterkit.c	/^static double Izero(double x)$/;"	f	file:
+IzeroEPSILON	filterkit.c	117;"	d	file:
+LARGE_FILTER_IMP	largefilter.h	/^static HWORD LARGE_FILTER_IMP[] \/* Impulse response *\/ = {$/;"	v
+LARGE_FILTER_IMPD	largefilter.h	/^static HWORD LARGE_FILTER_IMPD[] \/* Impulse response differences *\/ = {$/;"	v
+LARGE_FILTER_NMULT	largefilter.h	22;"	d
+LARGE_FILTER_NWING	largefilter.h	24;"	d
+LARGE_FILTER_SCALE	largefilter.h	23;"	d
+LDFLAGS	Makefile	/^LDFLAGS = $/;"	m
+LIBOBJS	Makefile	/^LIBOBJS = $/;"	m
+LIBS	Makefile	/^LIBS = -lm $/;"	m
+LINK	Makefile	/^LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@$/;"	m
+LTLIBOBJS	Makefile	/^LTLIBOBJS = $/;"	m
+LpFilter	filterkit.c	/^void LpFilter(double c[], int N, double frq, double Beta, int Num)$/;"	f
+LpScl	filterkit.c	/^static UHWORD LpScl, Nmult, Nwing;$/;"	v	file:
+MAKEINFO	Makefile	/^MAKEINFO = ${SHELL} \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/missing --run makeinfo$/;"	m
+MAX	stdefs.h	25;"	d
+MAXITER	filterkit.c	498;"	d	file:
+MAXNWING	filterkit.c	218;"	d	file:
+MAXNWING	windowfilter.c	8;"	d	file:
+MAX_HWORD	stdefs.h	48;"	d
+MIN	stdefs.h	28;"	d
+MIN_HWORD	stdefs.h	49;"	d
+MUS_SAMPLE_TYPE_TO_HWORD	stdefs.h	45;"	d
+NLpScl	resample.h	23;"	d
+NORMAL_INSTALL	Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_UNINSTALL	Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NOT_A_SOUND_FILE	sndlibextra.h	31;"	d
+NVCC	Makefile	/^NVCC = nvcc$/;"	m
+NVCOMPILE	Makefile	/^NVCOMPILE = $(NVCC) $(NVFLAGS) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES)$/;"	m
+NVFLAGS	Makefile	/^NVFLAGS = -g -G$/;"	m
+Na	resample.h	14;"	d
+Nb	resample.h	20;"	d
+Nh	resample.h	19;"	d
+Nhc	resample.h	13;"	d
+Nhg	resample.h	22;"	d
+Nhxn	resample.h	21;"	d
+Nmult	filterkit.c	/^static UHWORD LpScl, Nmult, Nwing;$/;"	v	file:
+NmultHelp	windowfilter.c	/^char NmultHelp[] =$/;"	v
+Np	resample.h	15;"	d
+Npc	resample.h	16;"	d
+Nwing	filterkit.c	/^static UHWORD LpScl, Nmult, Nwing;$/;"	v	file:
+OBJEXT	Makefile	/^OBJEXT = o$/;"	m
+PACKAGE	Makefile	/^PACKAGE = resample$/;"	m
+PACKAGE_BUGREPORT	Makefile	/^PACKAGE_BUGREPORT = resample-bugs@w3k.org$/;"	m
+PACKAGE_NAME	Makefile	/^PACKAGE_NAME = resample$/;"	m
+PACKAGE_STRING	Makefile	/^PACKAGE_STRING = resample 1.8.1$/;"	m
+PACKAGE_TARNAME	Makefile	/^PACKAGE_TARNAME = resample$/;"	m
+PACKAGE_VERSION	Makefile	/^PACKAGE_VERSION = 1.8.1$/;"	m
+PATH_SEPARATOR	Makefile	/^PATH_SEPARATOR = :$/;"	m
+PI	stdefs.h	14;"	d
+PI2	stdefs.h	18;"	d
+POST_INSTALL	Makefile	/^POST_INSTALL = :$/;"	m
+POST_UNINSTALL	Makefile	/^POST_UNINSTALL = :$/;"	m
+PRE_INSTALL	Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_UNINSTALL	Makefile	/^PRE_UNINSTALL = :$/;"	m
+PROGRAMS	Makefile	/^PROGRAMS = $(bin_PROGRAMS)$/;"	m
+Pmask	resample.h	18;"	d
+Query	filterkit.c	/^BOOL Query(char *prompt, BOOL deflt, char *help)$/;"	f
+R2D	stdefs.h	22;"	d
+RANLIB	Makefile	/^RANLIB = ranlib$/;"	m
+SET_MAKE	Makefile	/^SET_MAKE = $/;"	m
+SGN	stdefs.h	36;"	d
+SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
+SMALL_FILTER_IMP	smallfilter.h	/^static HWORD SMALL_FILTER_IMP[] \/* Impulse response *\/ = {$/;"	v
+SMALL_FILTER_IMPD	smallfilter.h	/^static HWORD SMALL_FILTER_IMPD[] = {$/;"	v
+SMALL_FILTER_NMULT	smallfilter.h	2;"	d
+SMALL_FILTER_NWING	smallfilter.h	4;"	d
+SMALL_FILTER_SCALE	smallfilter.h	3;"	d
+SNDLIB	Makefile	/^SNDLIB = ..\/sndlib-20$/;"	m
+SOURCES	Makefile	/^SOURCES = $(resample_SOURCES) $(windowfilter_SOURCES)$/;"	m
+STRIP	Makefile	/^STRIP = $/;"	m
+SrcLinear	resamplesubs.c	/^  SrcLinear(HWORD X[], HWORD Y[], double factor, UWORD *Time, UHWORD Nx)$/;"	f	file:
+SrcUD	resamplesubs.c	/^static int SrcUD(HWORD X[], HWORD Y[], double factor, UWORD *Time,$/;"	f	file:
+SrcUp	resamplesubs.c	/^static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,$/;"	f	file:
+TRUE	stdefs.h	6;"	d
+UHWORD	stdefs.h	/^typedef unsigned short UHWORD;$/;"	t
+USAGE	resample.c	14;"	d	file:
+UWORD	stdefs.h	/^typedef unsigned int   UWORD;$/;"	t
+VERSION	Makefile	/^VERSION = 1.8.1$/;"	m
+WORD	stdefs.h	/^typedef int            WORD;$/;"	t
+WRITEABLE_HEADER_TYPE	sndlibextra.h	36;"	d
+WordToHword	resamplesubs.c	/^static INLINE HWORD WordToHword(WORD v, int scl)$/;"	f	file:
+ZeroxEPSILON	filterkit.c	499;"	d	file:
+ZeroxMAXERROR	filterkit.c	500;"	d	file:
+_STDEFS_H	stdefs.h	3;"	d
+ac_ct_CC	Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_RANLIB	Makefile	/^ac_ct_RANLIB = @ac_ct_RANLIB@$/;"	m
+ac_ct_STRIP	Makefile	/^ac_ct_STRIP = @ac_ct_STRIP@$/;"	m
+am__aclocal_m4_deps	Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/configure.in$/;"	m
+am__cd	Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__configure_deps	Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__depfiles_maybe	Makefile	/^am__depfiles_maybe = depfiles$/;"	m
+am__fastdepCC_FALSE	Makefile	/^am__fastdepCC_FALSE = #$/;"	m
+am__fastdepCC_TRUE	Makefile	/^am__fastdepCC_TRUE = $/;"	m
+am__include	Makefile	/^am__include = include$/;"	m
+am__installdirs	Makefile	/^am__installdirs = "$(DESTDIR)$(bindir)"$/;"	m
+am__leading_dot	Makefile	/^am__leading_dot = .$/;"	m
+am__quote	Makefile	/^am__quote = $/;"	m
+am__tar	Makefile	/^am__tar = ${AMTAR} chof - "$$tardir"$/;"	m
+am__untar	Makefile	/^am__untar = ${AMTAR} xf -$/;"	m
+am_resample_OBJECTS	Makefile	/^am_resample_OBJECTS = resample.$(OBJEXT) resamplesubs.$(OBJEXT) \\$/;"	m
+am_windowfilter_OBJECTS	Makefile	/^am_windowfilter_OBJECTS = windowfilter.$(OBJEXT) \\$/;"	m
+binPROGRAMS_INSTALL	Makefile	/^binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)$/;"	m
+bin_PROGRAMS	Makefile	/^bin_PROGRAMS = resample$(EXEEXT) windowfilter$(EXEEXT)$/;"	m
+bindir	Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+build_alias	Makefile	/^build_alias = $/;"	m
+comment	resample.c	/^static char comment[256] = "";$/;"	v	file:
+datadir	Makefile	/^datadir = ${prefix}\/share$/;"	m
+depcomp	Makefile	/^depcomp = $(SHELL) $(top_srcdir)\/depcomp$/;"	m
+err_ret	resamplesubs.c	/^static int err_ret(char *s)$/;"	f	file:
+exec_prefix	Makefile	/^exec_prefix = ${prefix}$/;"	m
+fail	resample.c	/^static void fail(char *s)$/;"	f	file:
+fails	resample.c	/^static void fails(char *s, char *s2)$/;"	f	file:
+getstr	filterkit.c	/^static void getstr(char *prompt, char *defaultAnswer, char *answer)$/;"	f	file:
+host_alias	Makefile	/^host_alias = $/;"	m
+includedir	Makefile	/^includedir = ${prefix}\/include$/;"	m
+infodir	Makefile	/^infodir = ${prefix}\/share\/info$/;"	m
+initZerox	filterkit.c	/^int initZerox(UHWORD tempNmult)$/;"	f
+install_sh	Makefile	/^install_sh = \/home\/gxy\/cuda-workspace\/resample-GPU\/GPU-Upsampling\/install-sh$/;"	m
+install_sh_DATA	Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_PROGRAM	Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+libdir	Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libexecdir	Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+localstatedir	Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+main	resample.c	/^int main(int argc, char *argv[])$/;"	f
+main	windowfilter.c	/^int main(void)$/;"	f
+makeFilter	filterkit.c	/^int makeFilter(HWORD Imp[], HWORD ImpD[], UHWORD *LpScl, UHWORD Nwing,$/;"	f
+mandir	Makefile	/^mandir = ${prefix}\/share\/man$/;"	m
+mkdir_p	Makefile	/^mkdir_p = mkdir -p --$/;"	m
+mkinstalldirs	Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+nof	resamplesubs.c	/^static int nof = 0;             \/* negative overflow count *\/$/;"	v	file:
+oldincludedir	Makefile	/^oldincludedir = \/usr\/include$/;"	m
+pkgdatadir	Makefile	/^pkgdatadir = $(datadir)\/resample$/;"	m
+pkgincludedir	Makefile	/^pkgincludedir = $(includedir)\/resample$/;"	m
+pkglibdir	Makefile	/^pkglibdir = $(libdir)\/resample$/;"	m
+pof	resamplesubs.c	/^static int pof = 0;             \/* positive overflow count *\/$/;"	v	file:
+prefix	Makefile	/^prefix = \/usr\/local$/;"	m
+program_transform_name	Makefile	/^program_transform_name = s,x,x,$/;"	m
+readData	resamplesubs.c	/^readData(int   infd,          \/* input file descriptor *\/$/;"	f	file:
+readFilter	filterkit.c	/^int readFilter(char *filterFile, HWORD **ImpP, HWORD **ImpDP, UHWORD *LpScl, $/;"	f
+resample	resamplesubs.c	/^int resample(                   \/* number of output samples returned *\/$/;"	f
+resampleFast	resamplesubs.c	/^static int resampleFast(  \/* number of output samples returned *\/$/;"	f	file:
+resampleVersion	resample.c	/^static char resampleVersion[] $/;"	v	file:
+resampleWithFilter	resamplesubs.c	/^static int resampleWithFilter(  \/* number of output samples returned *\/$/;"	f	file:
+resample_DEPENDENCIES	Makefile	/^resample_DEPENDENCIES =$/;"	m
+resample_LDADD	Makefile	/^resample_LDADD = -lm$/;"	m
+resample_OBJECTS	Makefile	/^resample_OBJECTS = $(am_resample_OBJECTS)$/;"	m
+resample_SOURCES	Makefile	/^resample_SOURCES = resample.c resamplesubs.c sndlibextra.c filterkit.c \\$/;"	m
+sbindir	Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+sharedstatedir	Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+sndlib_allocate_buffers	sndlibextra.c	/^sndlib_allocate_buffers(int nchans, int nframes)$/;"	f
+sndlib_create	sndlibextra.c	/^sndlib_create(char *sfname, \/* file name *\/$/;"	f
+sndlib_free_buffers	sndlibextra.c	/^sndlib_free_buffers(int **bufs, int nchans)$/;"	f
+srcdir	Makefile	/^srcdir = .$/;"	m
+subdir	Makefile	/^subdir = src$/;"	m
+sysconfdir	Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+target_alias	Makefile	/^target_alias = $/;"	m
+top_builddir	Makefile	/^top_builddir = ..$/;"	m
+top_srcdir	Makefile	/^top_srcdir = ..$/;"	m
+trace	resample.c	/^static int trace = 1;		\/* controls verbosity of output *\/$/;"	v	file:
+transform	Makefile	/^transform = $(program_transform_name)$/;"	m
+windowfilter_DEPENDENCIES	Makefile	/^windowfilter_DEPENDENCIES =$/;"	m
+windowfilter_LDADD	Makefile	/^windowfilter_LDADD = -lm$/;"	m
+windowfilter_OBJECTS	Makefile	/^windowfilter_OBJECTS = $(am_windowfilter_OBJECTS)$/;"	m
+windowfilter_SOURCES	Makefile	/^windowfilter_SOURCES = windowfilter.c resamplesubs.c sndlibextra.c filterkit.c \\$/;"	m
+writeFilter	filterkit.c	/^int writeFilter(HWORD Imp[], HWORD ImpD[], UHWORD LpScl, UHWORD Nmult, $/;"	f
+zerox	filterkit.c	/^double zerox(HWORD *Data, double Factor)$/;"	f
