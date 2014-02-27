@@ -6,4 +6,8 @@ __global__ void kernel(int *a, int *b) {
 
 extern "C" {
 
+void print() {
+
+}
+
 }
