@@ -15,6 +15,8 @@
 #include "filterkit.h"
 #include "sndlibextra.h"
 
+/* GPU relevant codes */
+HWORD *global_Xps;
 
 /* CAUTION: Assumes we call this for only one resample job per program run! */
 /* return: 0 - notDone */
@@ -159,10 +161,8 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
 	
-	int c = 0;
     while (*Time < endTime)
     {
-		++c;
         Xp = &X[*Time>>Np];      /* Ptr to current input sample */
         /* Perform left-wing inner product */
         v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),-1);
@@ -175,7 +175,6 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
         *Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
         *Time += dtb;           /* Move to next sample by time increment */
     }
-	printf("c = %d, caculated = %d\n", c, ((1<<Np)*(WORD)Nx + dtb - 1)/ dtb);
 
     return (Y - Ystart);        /* Return the number of output samples */
 }
@@ -370,8 +369,13 @@ static int resampleWithFilter(  /* number of output samples returned */
     
     for (i=0; i<Xoff; X1[i++]=0); /* Need Xoff zeros at begining of sample */
     for (i=0; i<Xoff; X2[i++]=0); /* Need Xoff zeros at begining of sample */
+
+	/* GPU relevant codes */
+	double g_dt = 1.0 / factor;
+	UWORD g_dtb = g_dt * (1<<Np) + 0.5;	
+	int g_loop = ((1<<Np)*(WORD)Nx + g_dtb - 1) / g_dtb;
+	global_Xps = (HWORD*)malloc(sizeof(HWORD) * g_loop);
         
-	printf("hahah\n");
     do {
         if (!last)              /* If haven't read last sample yet */
         {
@@ -442,6 +446,9 @@ static int resampleWithFilter(  /* number of output samples returned */
         printf(".");  fflush(stdout);
 
     } while (Ycount<outCount); /* Continue until done */
+
+	/* GPU relevant codes */
+	free(global_Xps);
 
     return(Ycount);             /* Return # of samples in output file */
 }
