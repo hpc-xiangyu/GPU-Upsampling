@@ -158,8 +158,11 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
     
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
+	
+	int c = 0;
     while (*Time < endTime)
     {
+		++c;
         Xp = &X[*Time>>Np];      /* Ptr to current input sample */
         /* Perform left-wing inner product */
         v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),-1);
@@ -172,6 +175,8 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
         *Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
         *Time += dtb;           /* Move to next sample by time increment */
     }
+	printf("c = %d, caculated = %d\n", c, ((1<<Np)*(WORD)Nx + dtb - 1)/ dtb);
+
     return (Y - Ystart);        /* Return the number of output samples */
 }
 
@@ -365,7 +370,8 @@ static int resampleWithFilter(  /* number of output samples returned */
     
     for (i=0; i<Xoff; X1[i++]=0); /* Need Xoff zeros at begining of sample */
     for (i=0; i<Xoff; X2[i++]=0); /* Need Xoff zeros at begining of sample */
-        
+        
+	printf("hahah\n");
     do {
         if (!last)              /* If haven't read last sample yet */
         {
