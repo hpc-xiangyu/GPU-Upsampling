@@ -7,7 +7,7 @@
 #include <math.h>
 #include <string.h>
 
-#define IBUFFSIZE 4096                         /* Input buffer size */
+#define IBUFFSIZE 4096                        /* Input buffer size */
 
 #include "smallfilter.h"
 #include "largefilter.h"
@@ -79,7 +79,7 @@ static int pof = 0;             /* positive overflow count */
 static int nof = 0;             /* negative overflow count */
 #endif
 
-static INLINE HWORD WordToHword(WORD v, int scl)
+INLINE HWORD WordToHword(WORD v, int scl)
 {
     HWORD out;
     WORD llsb = (1<<(scl-1));
@@ -138,13 +138,10 @@ static int
         *Y++ = WordToHword(v,Np);   /* Deposit output */
         *Time += dtb;               /* Move to next sample by time increment */
     }
-    return (Y - Ystart);            /* Return number of output samples */
-}
-
 /* Sampling rate up-conversion only subroutine;
  * Slightly faster than down-conversion;
  */
-static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
+static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *const Time,
                  UHWORD Nx, UHWORD Nwing, UHWORD LpScl,
                  HWORD Imp[], HWORD ImpD[], BOOL Interp)
 {
@@ -157,13 +154,16 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
     
     dt = 1.0/factor;            /* Output sampling period */
     dtb = dt*(1<<Np) + 0.5;     /* Fixed-point representation */
-    
+
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
+
 	
     while (*Time < endTime)
     {
         Xp = &X[*Time>>Np];      /* Ptr to current input sample */
+		
+
         /* Perform left-wing inner product */
         v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),-1);
         /* Perform right-wing inner product */
@@ -175,6 +175,7 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
         *Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
         *Time += dtb;           /* Move to next sample by time increment */
     }
+
 
     return (Y - Ystart);        /* Return the number of output samples */
 }
@@ -371,10 +372,6 @@ static int resampleWithFilter(  /* number of output samples returned */
     for (i=0; i<Xoff; X2[i++]=0); /* Need Xoff zeros at begining of sample */
 
 	/* GPU relevant codes */
-	double g_dt = 1.0 / factor;
-	UWORD g_dtb = g_dt * (1<<Np) + 0.5;	
-	int g_loop = ((1<<Np)*(WORD)Nx + g_dtb - 1) / g_dtb;
-	global_Xps = (HWORD*)malloc(sizeof(HWORD) * g_loop);
         
     do {
         if (!last)              /* If haven't read last sample yet */
@@ -389,18 +386,30 @@ static int resampleWithFilter(  /* number of output samples returned */
         }
         /* Resample stuff in input buffer */
         Time2 = Time;
-        if (factor >= 1) {      /* SrcUp() is faster if we can use it */
-            Nout=SrcUp(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
-            if (nChans==2)
-              Nout=SrcUp(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
+
+		// if (!interpFilt) {	
+        	if (factor >= 1) {      /* SrcUp() is faster if we can use it */
+            	Nout=SrcUp(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+            	if (nChans==2)
+              	Nout=SrcUp(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+        	} else {
+            	Nout=SrcUD(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+            	if (nChans==2)
+              	Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+        	}
+		// } else {
+			/*
+			if (factor >= 1) {
+				Nout=GPU_SrcUp(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+				if (nChans==2)
+				Nout=GPU_SrcUp(X2,Y2,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+			} else {
+            	Nout=SrcUD(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+            	if (nChans==2)
+              	Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
                          interpFilt);
-        }
-        else {
-            Nout=SrcUD(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
-            if (nChans==2)
-              Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
-                         interpFilt);
-        }
+			}*/
+		// }
 
         Time -= (Nx<<Np);       /* Move converter Nx samples back in time */
         Xp += Nx;               /* Advance by number of samples processed */
