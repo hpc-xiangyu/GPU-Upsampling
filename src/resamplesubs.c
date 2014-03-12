@@ -6,8 +6,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include <assert.h>
 
-#define IBUFFSIZE 4096                        /* Input buffer size */
+#include <sys/time.h>
+
+#define IBUFFSIZE 4096                         /* Input buffer size */
 
 #include "smallfilter.h"
 #include "largefilter.h"
@@ -15,8 +18,9 @@
 #include "filterkit.h"
 #include "sndlibextra.h"
 
-/* GPU relevant codes */
-HWORD *global_Xps;
+#define TIME(b, e) 				\
+	((e.tv_sec-b.tv_sec)*1000 +	\
+	(e.tv_usec-b.tv_usec)/1000.0)
 
 /* CAUTION: Assumes we call this for only one resample job per program run! */
 /* return: 0 - notDone */
@@ -138,10 +142,13 @@ static int
         *Y++ = WordToHword(v,Np);   /* Deposit output */
         *Time += dtb;               /* Move to next sample by time increment */
     }
+    return (Y - Ystart);            /* Return number of output samples */
+}
+
 /* Sampling rate up-conversion only subroutine;
  * Slightly faster than down-conversion;
  */
-static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *const Time,
+static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *Time,
                  UHWORD Nx, UHWORD Nwing, UHWORD LpScl,
                  HWORD Imp[], HWORD ImpD[], BOOL Interp)
 {
@@ -151,18 +158,41 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *const Time,
     double dt;                  /* Step through input signal */ 
     UWORD dtb;                  /* Fixed-point version of Dt */
     UWORD endTime;              /* When Time reaches EndTime, return to user */
+
+#ifdef CPU_DEBUG
+	int i;
+	FILE *fp1 = fopen("./verify/cpu_TandP.txt", "a");
+	FILE *fp2 = fopen("./verify/cpu_TxorP.txt", "a");
+	FILE *fp3 = fopen("./verify/cpu_indices.txt", "a");
+	FILE *fp4 = fopen("./verify/cpu_X.txt", "a");
+	FILE *fp5 = fopen("./verify/cpu_Y.txt", "a");
+	FILE *fp6 = fopen("./verify/cpu_v.txt", "a");
+	assert(fp1);
+	assert(fp2);
+	assert(fp3);
+	assert(fp4);
+	assert(fp5);
+	assert(fp6);
+	HWORD *py;
+	for (i = 0; i < IBUFFSIZE; ++i)
+		fprintf(fp4, "%hd\n", X[i]);
+#endif
     
     dt = 1.0/factor;            /* Output sampling period */
     dtb = dt*(1<<Np) + 0.5;     /* Fixed-point representation */
-
+    
     Ystart = Y;
     endTime = *Time + (1<<Np)*(WORD)Nx;
 
-	
     while (*Time < endTime)
     {
         Xp = &X[*Time>>Np];      /* Ptr to current input sample */
-		
+
+#ifdef CPU_DEBUG
+		fprintf(fp1, "%hd\n", (HWORD)(*Time&Pmask));
+		fprintf(fp2, "%hd\n", (HWORD)((((*Time)^Pmask)+1)&Pmask));
+		fprintf(fp3, "%u\n", *Time>>Np);
+#endif
 
         /* Perform left-wing inner product */
         v = FilterUp(Imp, ImpD, Nwing, Interp, Xp, (HWORD)(*Time&Pmask),-1);
@@ -172,10 +202,34 @@ static int SrcUp(HWORD X[], HWORD Y[], double factor, UWORD *const Time,
                       (HWORD)((((*Time)^Pmask)+1)&Pmask),1);
         v >>= Nhg;              /* Make guard bits */
         v *= LpScl;             /* Normalize for unity filter gain */
+
+#ifdef CPU_DEBUG
+		py = Y;		
+#endif
+
         *Y++ = WordToHword(v,NLpScl);   /* strip guard bits, deposit output */
         *Time += dtb;           /* Move to next sample by time increment */
+
+#ifdef CPU_DEBUG
+		fprintf(fp5, "%hd\n", *py);
+		fprintf(fp6, "%d\n", v);
+#endif
     }
 
+#ifdef CPU_DEBUG
+	fprintf(fp1, "\n");
+	fprintf(fp2, "\n");
+	fprintf(fp3, "\n");
+	fprintf(fp4, "\n");
+	fprintf(fp5, "\n");
+	fprintf(fp6, "\n");
+	fclose(fp1);
+	fclose(fp2);
+	fclose(fp3);
+	fclose(fp4);
+	fclose(fp5);
+	fclose(fp6);
+#endif
 
     return (Y - Ystart);        /* Return the number of output samples */
 }
@@ -345,7 +399,7 @@ static int resampleWithFilter(  /* number of output samples returned */
     HWORD X2[IBUFFSIZE], Y2[OBUFFSIZE]; /* I/O buffers */
     UHWORD Nout, Nx;
     int i, Ycount, last;
-    
+	
     mus_sample_t **obufs = sndlib_allocate_buffers(nChans, OBUFFSIZE);
     if (obufs == NULL)
         return err_ret("Can't allocate output buffers");
@@ -371,8 +425,8 @@ static int resampleWithFilter(  /* number of output samples returned */
     for (i=0; i<Xoff; X1[i++]=0); /* Need Xoff zeros at begining of sample */
     for (i=0; i<Xoff; X2[i++]=0); /* Need Xoff zeros at begining of sample */
 
-	/* GPU relevant codes */
-        
+	GPU_Init(Imp, ImpD, Nwing, IBUFFSIZE, OBUFFSIZE, factor);
+
     do {
         if (!last)              /* If haven't read last sample yet */
         {
@@ -386,30 +440,31 @@ static int resampleWithFilter(  /* number of output samples returned */
         }
         /* Resample stuff in input buffer */
         Time2 = Time;
-
-		// if (!interpFilt) {	
+		if (!interpFilt) {
         	if (factor >= 1) {      /* SrcUp() is faster if we can use it */
             	Nout=SrcUp(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
             	if (nChans==2)
-              	Nout=SrcUp(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
-        	} else {
+              		Nout=SrcUp(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
+                         interpFilt);
+        	}
+        	else {
             	Nout=SrcUD(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
             	if (nChans==2)
-              	Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+              		Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
+                         interpFilt);
         	}
-		// } else {
-			/*
+		} else {
 			if (factor >= 1) {
-				Nout=GPU_SrcUp(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+				Nout=GPU_SrcUP(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt,IBUFFSIZE,OBUFFSIZE);	
 				if (nChans==2)
-				Nout=GPU_SrcUp(X2,Y2,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
+				Nout=GPU_SrcUP(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,interpFilt,IBUFFSIZE,OBUFFSIZE);	
 			} else {
             	Nout=SrcUD(X1,Y1,factor,&Time,Nx,Nwing,LpScl,Imp,ImpD,interpFilt);
             	if (nChans==2)
-              	Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
+              		Nout=SrcUD(X2,Y2,factor,&Time2,Nx,Nwing,LpScl,Imp,ImpD,
                          interpFilt);
-			}*/
-		// }
+			}
+		}
 
         Time -= (Nx<<Np);       /* Move converter Nx samples back in time */
         Xp += Nx;               /* Advance by number of samples processed */
@@ -456,8 +511,7 @@ static int resampleWithFilter(  /* number of output samples returned */
 
     } while (Ycount<outCount); /* Continue until done */
 
-	/* GPU relevant codes */
-	free(global_Xps);
+	GPU_Destruct();
 
     return(Ycount);             /* Return # of samples in output file */
 }

@@ -55,7 +55,7 @@ resample_DEPENDENCIES =
 am_windowfilter_OBJECTS = windowfilter.$(OBJEXT) \
 	resamplesubs.$(OBJEXT) sndlibextra.$(OBJEXT) \
 	filterkit.$(OBJEXT) audio.$(OBJEXT) io.$(OBJEXT) \
-	headers.$(OBJEXT) sound.$(OBJEXT)
+	headers.$(OBJEXT) sound.$(OBJEXT) gpu_resample.$(OBJEXT)
 windowfilter_OBJECTS = $(am_windowfilter_OBJECTS)
 windowfilter_DEPENDENCIES =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -84,7 +84,7 @@ CC = gcc
 NVCC = nvcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
-NVFLAGS = -g -G
+NVFLAGS = -g -G -arch=sm_20
 CPP = gcc -E
 CPPFLAGS = 
 CYGPATH_W = echo
@@ -152,12 +152,13 @@ INCLUDES = -I$(SNDLIB)
 resample_SOURCES = resample.c resamplesubs.c sndlibextra.c filterkit.c \
 	$(SNDLIB)/audio.c $(SNDLIB)/io.c $(SNDLIB)/headers.c $(SNDLIB)/sound.c \
 	resample.h stdefs.h sndlibextra.h filterkit.h smallfilter.h largefilter.h \
-	gpu_resample.h \
+	gpu_resample.cu \
 	$(SNDLIB)/sndlib.h $(SNDLIB)/mus-config.h $(SNDLIB)/_sndlib.h $(SNDLIB)/sndlib-strings.h  $(SNDLIB)/configure
 
 resample_LDADD = -lm
 windowfilter_SOURCES = windowfilter.c resamplesubs.c sndlibextra.c filterkit.c \
-	$(SNDLIB)/audio.c $(SNDLIB)/io.c $(SNDLIB)/headers.c $(SNDLIB)/sound.c
+	$(SNDLIB)/audio.c $(SNDLIB)/io.c $(SNDLIB)/headers.c $(SNDLIB)/sound.c \
+	gpu_resample.cu
 
 windowfilter_LDADD = -lm
 EXTRA_DIST = $(man_MANS)
