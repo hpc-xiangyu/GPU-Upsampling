@@ -26,7 +26,7 @@ HWORD	*TandP, *TxorP;
 WORD	*Vs;
 size_t	*indices;
 
-const int BLOCKS = 256, THREADS = 256;
+const int BLOCKS = 256, THREADS = 128;
 
 __global__ void kernel_FilterUp(
 	HWORD d_Imp[], HWORD d_ImpD[], UHWORD Nwing,  
@@ -40,6 +40,7 @@ __global__ void kernel_FilterUp(
 	WORD t, v = 0;
 	HWORD Ph;
 	HWORD Inc;
+	WORD t_v;
 
 	for (int i = idx; i < g_count; i += t_num) {
 		HWORD const *Xp = &d_X[d_indices[i]];
@@ -64,7 +65,8 @@ __global__ void kernel_FilterUp(
 			Hp += Npc;
 			Xp += Inc;
 		}
-		d_Vs[i] = v;
+		// d_Vs[i] = v;
+		t_v = v;
 	
 		v = 0;
 		Inc = 1;
@@ -94,10 +96,27 @@ __global__ void kernel_FilterUp(
 			Hp += Npc;
 			Xp += Inc;
 		}
-		d_Vs[i] += v;
+		// d_Vs[i] += v;
+		t_v += v;
 	
-		d_Vs[i] >>= Nhg;
-		d_Vs[i] *= LpScl;
+		// d_Vs[i] >>= Nhg;
+		// d_Vs[i] *= LpScl;
+		t_v >>= Nhg;
+		t_v *= LpScl;
+		d_Vs[i] = t_v;
+	}
+}
+
+__global__ void kernel_init(HWORD TandP[], HWORD TxorP[], 
+	size_t indices[], int g_count, UWORD time, UWORD dtb) {
+	int idx = threadIdx.x + blockDim.x * blockIdx.x;
+	int tn = blockDim.x * gridDim.x;
+	int realTime;
+	for (int i = idx; i < g_count; i += tn) {
+		realTime = time + i * dtb;
+		indices[i] = realTime>>Np;
+		TandP[i] = (HWORD)(realTime&Pmask);
+		TxorP[i] = (HWORD)(((realTime^Pmask)+1)&Pmask);
 	}
 }
 
@@ -177,8 +196,10 @@ int GPU_SrcUP(HWORD X[], HWORD Y[], double factor, UWORD *Time,
 	
 	/* GPU need */
 	int g_count = ((1<<Np)*(WORD)Nx + dtb - 1) / dtb;
+/*
 	int realTime;
-	for (int i = 0; i < g_count; ++i) {
+	int i;
+	for (i = 0; i < g_count; ++i) {
 		realTime = *Time + i * dtb;
 		indices[i] = realTime>>Np;
 		TandP[i] = (HWORD)(realTime&Pmask);
@@ -189,6 +210,7 @@ int GPU_SrcUP(HWORD X[], HWORD Y[], double factor, UWORD *Time,
 		fprintf(fp4, "%zu\n", indices[i]);
 #endif
 	}
+*/
 #ifdef GPU_DEBUG
 	for (int i = 0; i < IBUFFSIZE; ++i)
 		fprintf(fp3, "%hd\n", X[i]);
@@ -202,20 +224,46 @@ int GPU_SrcUP(HWORD X[], HWORD Y[], double factor, UWORD *Time,
 	fclose(fp4);
 #endif
 
+	kernel_init<<<BLOCKS, THREADS>>>(d_TandP, d_TxorP, d_indices, g_count, *Time, dtb); 
+/* Test Codes
+
+	HWORD *x_TandP, *x_TxorP;
+	size_t  *x_indices;	
+	x_TandP = (HWORD*)malloc(sizeof(HWORD)*g_count);
+	x_TxorP = (HWORD*)malloc(sizeof(HWORD)*g_count);
+	x_indices = (size_t*)malloc(sizeof(size_t)*g_count);
+	CUDA_CHECK_RETURN(cudaMemcpy(x_TandP, d_TandP, sizeof(HWORD)*g_count, cudaMemcpyDeviceToHost));
+	CUDA_CHECK_RETURN(cudaMemcpy(x_TxorP, d_TxorP, sizeof(HWORD)*g_count, cudaMemcpyDeviceToHost));
+	CUDA_CHECK_RETURN(cudaMemcpy(x_indices, d_indices, sizeof(size_t)*g_count, cudaMemcpyDeviceToHost));
+	int a = 0, b = 0, c = 0;
+	for (int i = 0; i < g_count; ++i) {
+		if (x_TandP[i] != TandP[i])		++a;
+		if (x_TxorP[i] != TxorP[i])		++b; 
+		if (x_indices[i] != indices[i])	++c; 
+	}
+	if (a != 0 || b != 0 || c != 0)
+	printf("a=%d, b=%d, c=%d\n", a, b, c);
+	free(x_TandP);
+	free(x_TxorP);
+	free(x_indices);
+*/
+
 	*Time += g_count * dtb;
 
-	CUDA_CHECK_RETURN(cudaMemcpy(d_indices, indices, sizeof(size_t)*g_count, cudaMemcpyHostToDevice));
+	// CUDA_CHECK_RETURN(cudaMemcpy(d_indices, indices, sizeof(size_t)*g_count, cudaMemcpyHostToDevice));
 	CUDA_CHECK_RETURN(cudaMemcpy(d_X, X, sizeof(HWORD)*IBUFFSIZE, cudaMemcpyHostToDevice));
-	CUDA_CHECK_RETURN(cudaMemcpy(d_TandP, TandP, sizeof(HWORD)*g_count, cudaMemcpyHostToDevice));
-	CUDA_CHECK_RETURN(cudaMemcpy(d_TxorP, TxorP, sizeof(HWORD)*g_count, cudaMemcpyHostToDevice));
+	// CUDA_CHECK_RETURN(cudaMemcpy(d_TandP, TandP, sizeof(HWORD)*g_count, cudaMemcpyHostToDevice));
+	// CUDA_CHECK_RETURN(cudaMemcpy(d_TxorP, TxorP, sizeof(HWORD)*g_count, cudaMemcpyHostToDevice));
 	kernel_FilterUp<<<BLOCKS, THREADS>>>(d_Imp, d_ImpD, Nwing, d_X, d_TandP, d_TxorP, d_indices, d_Vs, g_count, LpScl);
 	CUDA_CHECK_RETURN(cudaMemcpy(Vs, d_Vs, sizeof(WORD)*g_count, cudaMemcpyDeviceToHost));
-#ifdef GPU_DEBUG
 	for (int i = 0; i < g_count; ++i) {
-		fprintf(fp6, "%d\n", Vs[i]);
 		Y[i] = WordToHword(Vs[i], NLpScl);
+#ifdef GPU_DEBUG
 		fprintf(fp5, "%hd\n", Y[i]);
+		fprintf(fp6, "%d\n", Vs[i]);
+#endif
 	}
+#ifdef GPU_DEBUG
 	fprintf(fp5, "\n");
 	fprintf(fp6, "\n");
 	fclose(fp5);
